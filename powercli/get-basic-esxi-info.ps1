@@ -6,9 +6,13 @@
     Writes basic configuration information of an ESXi host to StdOut
 
 .DESCRIPTION 
-
-.NOTES 
     This PowerShell script uses vCenter and ESXCLI to provide basic configuration information for an ESXI host
+ 
+.NOTES
+    Name: get-basic-esxi-info.ps1
+    Author: Dominik-Zorgnotti
+    Version: 1.0
+    DateCreated: 2022-08-23
 
 .COMPONENT 
     Requires Module PowerCLI
