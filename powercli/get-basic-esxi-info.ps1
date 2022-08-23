@@ -20,7 +20,14 @@
     Specifies the vCenter that manages the host 
 
 .Parameter hostname 
-    The hostname of the ESXi server from which you want to connect the informations 
+    The hostname of the ESXi server from which you want to connect the informations
+    
+.EXAMPLE
+    # Will ask for all required parameters
+    .\get-basic-esxi-info.ps1
+    # Will start without any userinput as all required parameters are specified at launch
+    .\get-basic-esxi-info.ps1 -vcenter cube-vcsa-01.lab.why-did-it.fail -hostname cube-esx-01.lab.why-did-it.fail
+
 #>
 
 
