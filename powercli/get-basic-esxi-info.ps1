@@ -85,14 +85,17 @@ $esx_basicinfo = [PSCustomObject]@{
     esxi_bi_hw_serial_number = $esxhost.ExtensionData.Hardware.SystemInfo.SerialNumber
 }
 
+$esxhost_hbalist = $esxcli.storage.san.fc.list.Invoke()
+
 $esx_hosthba_info = @()
 
 foreach ($vmhba in $(get-vmhosthba -VMHost $esxhost)) {
     $esx_hbainfo = [PSCustomObject]@{
         esxi_hba_name    = $vmhba.Device
+        esxi_hba_model   = ($esxhost_hbalist | where { $_.Adapter -eq $vmhba.Device }).ModelDescription
         esxi_hba_type    = [string]$vmhba.Type
         esxi_hba_status  = $vmhba.Status
-        esxi_hba_fc_wwpn = $vmhba.PortWorldWideName
+        esxi_hba_fc_wwpn = ($esxhost_hbalist | where { $_.Adapter -eq $vmhba.Device }).PortName
     }
     $esx_hosthba_info += $esx_hbainfo
     $esx_hbainfo = $null
@@ -172,6 +175,5 @@ Write-Output "Physical network card information about the ESXi host"
 Write-Output ""
 Write-Output $esx_hostpnic_info | ConvertTo-Json
 Write-Output ""
-
 
 
