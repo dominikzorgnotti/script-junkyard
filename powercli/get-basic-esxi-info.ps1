@@ -74,7 +74,6 @@ $esx_basicinfo = [PSCustomObject]@{
     esxi_bi_hw_serial_number = $esxhost.ExtensionData.Hardware.SystemInfo.SerialNumber
 }
 
-# Für jeden HBA liste den Namen, Modell und Status. Wenn FC dann auch WWPN
 $esx_hosthba_info = @()
 
 foreach ($vmhba in $(get-vmhosthba -VMHost $esxhost)) {
@@ -102,7 +101,6 @@ $esx_nwinfo = [PSCustomObject]@{
 
 
 $esx_hostvmk_info = @()
-
 foreach ($vmk in $(Get-VMHostNetworkAdapter -VMHost $esxhost -VMKernel)) {
     $esx_vmkinfo = [PSCustomObject]@{
         esxi_vmk_name      = $vmk.Name
@@ -118,7 +116,7 @@ foreach ($vmk in $(Get-VMHostNetworkAdapter -VMHost $esxhost -VMKernel)) {
     $esx_vmkinfo = $null
 }
 
-
+# Need View and ESXCLI to build the config map for CDP and HW information
 $esxhost_networksystem = Get-View $esxhost.ExtensionData.ConfigManager.NetworkSystem
 $esxhost_niclist = $esxcli.network.nic.list.Invoke()
 
@@ -138,26 +136,28 @@ foreach ($pnic in $(Get-VMHostNetworkAdapter -VMHost $esxhost -Physical)) {
 }
 
 
+# Disconnect after gathering the infos
 Disconnect-VIServer -Confirm:$false
 
 
+# Dump info with JSON formatting
 Write-Output ""
-Write-Output "General information about the Host"
+Write-Output "General information about the ESXi host"
 Write-Output $esx_basicinfo | ConvertTo-Json
 Write-Output ""
 Write-Output ""
-Write-Output "Storage information about the Host"
+Write-Output "Storage information about the ESXi host"
 Write-Output $esx_hosthba_info | ConvertTo-Json
 Write-Output ""
 Write-Output ""
-Write-Output "General network information about the Host"
+Write-Output "General network information of the ESXi host"
 Write-Output $esx_nwinfo | ConvertTo-Json
 Write-Output ""
 Write-Output ""
-Write-Output "VMKernel network information about the Host"
+Write-Output "VMKernel network information about the ESXi host"
 Write-Output $esx_hostvmk_info | ConvertTo-Json
 Write-Output ""
-Write-Output "Physical network caard information about the Host"
+Write-Output "Physical network card information about the ESXi host"
 Write-Output ""
 Write-Output $esx_hostpnic_info | ConvertTo-Json
 Write-Output ""
