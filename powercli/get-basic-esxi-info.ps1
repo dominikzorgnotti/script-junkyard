@@ -54,7 +54,7 @@ else {
     Start-Sleep 2
     Write-Host ""
     $vcname = Read-Host "vCenter FQDN or IP or press Enter for default [$($vcenter)]"
-    $vcname = ($vcenter, $prompt)[[bool]$prompt]
+    $vcname = ($vcenter, $vcname)[[bool]$vcname]
     Connect-VIServer -Server $vcname -ErrorAction Stop
 }
 
@@ -102,7 +102,6 @@ foreach ($vmhba in $(get-vmhosthba -VMHost $esxhost)) {
 }
 
 $esx_nwbasic_info = Get-VMHostNetwork -VMHost $esxhost
-$esx_nw_gateway = 
 $esx_nw_syslog = Get-VMHostSysLogServer -VMHost $esxhost
 
 
