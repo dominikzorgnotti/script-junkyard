@@ -107,9 +107,9 @@ $esx_nw_syslog = Get-VMHostSysLogServer -VMHost $esxhost
 
 $esx_nwinfo = [PSCustomObject]@{
     esxi_nwinfo_dnsdomainname = $esx_nwbasic_info.SearchDomain
-    esxi_nwinfo_dnsserver  = $esx_nwbasic_info.DnsAddress
-    esxi_nwinfo_syslog = $esx_nw_syslog
-    esxi_nwinfo_defaultgw = $esx_nwbasic_info.VMKernelGateway
+    esxi_nwinfo_dnsserver     = $esx_nwbasic_info.DnsAddress
+    esxi_nwinfo_syslog        = $esx_nw_syslog
+    esxi_nwinfo_defaultgw     = $esx_nwbasic_info.VMKernelGateway
 }
 
 
@@ -136,13 +136,15 @@ $esxhost_niclist = $esxcli.network.nic.list.Invoke()
 $esx_hostpnic_info = @()
 foreach ($pnic in $(Get-VMHostNetworkAdapter -VMHost $esxhost -Physical)) {
     $esx_pnicinfo = [PSCustomObject]@{
-        esxi_pnic_name           = $pnic.Name
-        esxi_pnic_model          = ($esxhost_niclist | where { $_.Name -match $pnic.Name }).Description
-        esxi_pnic_driver         = $pnic.ExtensionData.Driver
-        esxi_pnic_mac            = $pnic.Mac
-        esxi_pnic_speed          = $pnic.ExtensionData.LinkSpeed.SpeedMb
-        esxi_pnic_cdpswitch_name = $esxhost_networksystem.QueryNetworkHint($pnic).ConnectedSwitchPort.SystemName
-        esxi_pnic_cdpswitch_port = $esxhost_networksystem.QueryNetworkHint($pnic).ConnectedSwitchPort.PortId
+        esxi_pnic_name            = $pnic.Name
+        esxi_pnic_model           = ($esxhost_niclist | where { $_.Name -match $pnic.Name }).Description
+        esxi_pnic_driver          = $pnic.ExtensionData.Driver
+        esxi_pnic_mac             = $pnic.Mac
+        esxi_pnic_speed           = $pnic.ExtensionData.LinkSpeed.SpeedMb
+        esxi_pnic_cdpswitch_name  = $esxhost_networksystem.QueryNetworkHint($pnic).ConnectedSwitchPort.SystemName
+        esxi_pnic_cdpswitch_port  = $esxhost_networksystem.QueryNetworkHint($pnic).ConnectedSwitchPort.PortId
+        esxi_pnic_lldpswitch_name = ($esxhost_networksystem.QueryNetworkHint($pnic).LldpInfo.Parameter | where key -eq "System Name").Value
+        esxi_pnic_lldpswitch_port = $esxhost_networksystem.QueryNetworkHint($pnic).LldpInfo.PortId
     }
     $esx_hostpnic_info += $esx_pnicinfo
     $esx_pnicinfo = $null
