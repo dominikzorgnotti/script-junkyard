@@ -29,7 +29,25 @@ sudo apt-get update
 sudo apt-get install -y kubelet kubeadm kubectl containerd.io
 sudo apt-mark hold kubelet kubeadm kubectl containerd.io
 
+sudo mv /etc/containerd/config.toml /etc/containerd/config.toml.org
+
 cat <<EOF | sudo tee -a /etc/containerd/config.toml
+#disabled_plugins = ["cri"]
+#root = "/var/lib/containerd"
+#state = "/run/containerd"
+#subreaper = true
+#oom_score = 0
+
+#[grpc]
+#  address = "/run/containerd/containerd.sock"
+#  uid = 0
+#  gid = 0
+
+#[debug]
+#  address = "/run/containerd/debug.sock"
+#  uid = 0
+#  gid = 0
+#  level = "info"
 [plugins."io.containerd.grpc.v1.cri".containerd.runtimes.runc]
 [plugins."io.containerd.grpc.v1.cri".containerd.runtimes.runc.options]
 SystemdCgroup = true
