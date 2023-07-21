@@ -62,3 +62,8 @@ SystemdCgroup = true
 EOF
 
 sudo systemctl restart containerd
+
+
+cat <<EOF | sudo tee -a  ~/.bash_aliases
+alias k=kubectl
+EOF
